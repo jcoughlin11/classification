@@ -43,6 +43,7 @@ Notes:
         one output.
 """
 from tensorflow import keras
+import tensorflow as tf
 import numpy as np
 import layers
 import network
@@ -66,6 +67,36 @@ def preprocess(images):
 
 
 
+
+#============================================
+#                one_hot
+#============================================
+def one_hot(labels):
+    """
+    There are ten output nodes. Each produces a probability that the input sample belongs
+    to its class. In order to train, this vector of probabilities needs to be compared
+    with the target answer. The one-hot representation makes this easier by putting a 
+    class into a vector form. So 8 = [0,0,0,0,0,0,0,0,1,0] in one-hot form.
+
+    The tf.one_hot function will do this for you. See the docs for it, but basically
+    you give it depth = number of categories (this is the number of columns in the
+    resulting one-hot matrix) and indices = category index for each label. So, if I had
+    three categories: bird, dog, and cat (depth = 3) and two samples: [bird, cat], the
+    indices for bird and cat are 0, 2. So you'd give it tf.one_hot(depth = 3, indices = 
+    [0,2]) and it would produces the following matrix:
+
+    [1, 0, 0]
+    [0, 0, 1].
+
+    For my case, my categories are already numbers, so I can just pass those as the
+    indices directly and it works.
+    """
+    nClasses = 10
+    oneHot_labs = tf.one_hot(depth = nClasses, indices = labels)
+    return oneHot_labs
+
+
+
 #============================================
 #               Main Script
 #============================================
@@ -75,6 +106,9 @@ def preprocess(images):
 # Preprocess the data
 train_ims = preprocess(train_ims)
 test_ims = preprocess(test_ims)
+
+# Convert the labels to a one-hot representation
+train_labs = one_hot(train_labs)
 
 # Set up the network
 hidden_layer = layers.Layer(nNodes = 128, activation = 'linear')

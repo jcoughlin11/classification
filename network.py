@@ -50,8 +50,15 @@ class Network():
     #-----
     def train(self, training_set, labels, epochs = 1):
         # Initialize the weights for each layer
-        for l in self._layers:
-            l.init_weights((training_set.shape[1], l.nNodes))
+        for i, l in enumerate(self._layers):
+            # The first hidden layer is a special case because we need to use the number
+            # of input features
+            if i == 0:
+                l.init_weights((training_set.shape[1], l.nNodes))
+            # For the hidden layer l the weight matrix is NxM, where N is the number of
+            # nodes in layer l - 1, and M is the number of nodes in layer l.
+            else:
+                l.init_weights((self._layers[i-1].nNodes, l.nNodes))
         # Initialize the progress array (tracks the loss over time)
         self.progress = []
         # Loop over the desired number of epochs

@@ -26,6 +26,7 @@ class Layer():
         self.activation = activation
         self._activationFunction = None
         self.weights = None
+        self.error_signal = None
         self.initMethod = weight_init_method
         self._setActivationFunction()
 

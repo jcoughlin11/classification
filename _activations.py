@@ -5,6 +5,7 @@ Date:    1/15/19
 Purpose: Contains a list of different activation function definitions that nodes can use
 Notes:
 """
+import numpy as np
 
 
 
@@ -34,3 +35,42 @@ class Activation():
         g(z) = z
         """
         return 1.
+
+    #-----
+    # Logistic Activation Function
+    #-----
+    def logisticActivationFunction(self):
+        """
+        This is the standard logistic function g(z) = 1 / (1 + e^(-z))
+        """
+        return np.power(1. + np.exp(-self._z), -1.)
+
+    #-----
+    # Logistic Activation Function Derivative
+    #-----
+    def logisticActivationFunctionDeriv(self):
+        """
+        The first derivative of the logistic activation function
+        """
+        x = self.logisticActivationFunction()
+        return x * (1. - x)
+
+    #-----
+    # Softmax Activation Function
+    #-----
+    def softmaxActivationFunction(self):
+        """
+        This is the softmax function g(z_j) = e^(z_j) / \sum_i e^(z_i)
+        """
+        return np.exp(self._z) * np.power(np.sum(np.exp(self._z)), -1.)
+
+    #-----
+    # Softmax Activation Function Derivative
+    #-----
+    def softmaxActivationFunctionDeriv(self):
+        """
+        The first derivative of the softmax function. I feel a little weird writing this
+        because, functionally, it's identical to logistic's deriv.
+        """
+        x = self.softmaxActivationFunction()
+        return x * (1. - x)

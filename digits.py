@@ -97,7 +97,7 @@ def one_hot(labels):
     nClasses = 10
     oneHot_labs = np.zeros((labels.shape[0], nClasses))
     for i in range(len(labels)):
-        onHot_labs[i][labels[i]] = 1.
+        oneHot_labs[i][labels[i]] = 1.
     return oneHot_labs
 
 
@@ -117,9 +117,17 @@ test_ims = preprocess(test_ims)
 # Convert the labels to a one-hot representation
 train_labs = one_hot(train_labs)
 
-# Set up the network
+# Set up the network. The original tensorflow tutorial used 128 nodes in the hidden
+# layer, which I'm guessing is optimal. Doing that would take ~3.3 hours on my
+# laptop and this (super unoptimized) code for 1 epoch. So, yeah. Slow. Also, they
+# used the full 60,000 sample training set. I'm not going to do that as, again, slow.
+# The purpose of this exercise is less to have a network that has been trained really
+# well and more to gain a bit more experience about how a NN works on the gut level.
+train_ims = train_ims[0:10000]
+train_labs = train_labs[0:10000]
+test_ims = test_ims[0:1000]
 print('Constructing network...')
-hidden_layer = layers.Layer(nNodes = 128, activation = 'linear')
+hidden_layer = layers.Layer(nNodes = 32, activation = 'logistic')
 output_layer = layers.Layer(nNodes = 10, activation = 'softmax')
 net_layers = [hidden_layer, output_layer]
 net = network.Network(net_layers, learning_rate = 0.1)
@@ -127,6 +135,9 @@ net = network.Network(net_layers, learning_rate = 0.1)
 # Train the network
 print('Training...')
 net.train(train_ims, train_labs, epochs = 5)
+
+# Save the network
+net.save('digits', 28 * 28)
 
 # Test the network
 print('Testing...')

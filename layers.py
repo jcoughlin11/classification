@@ -97,6 +97,12 @@ class Layer(_activations.Activation):
         if self.activation == 'linear':
             self._activationFunction = self.linearActivationFunction
             self._actDeriv = self.linearActivationFunctionDeriv
+        elif self.activation == 'logistic':
+            self._activationFunction = self.logisticActivationFunction
+            self._actDeriv = self.logisticActivationFunctionDeriv
+        elif self.activation == 'softmax':
+            self._activationFunction = self.softmaxActivationFunction
+            self._actDeriv = self.softmaxActivationFunctionDeriv
 
     #-----
     # initialize_weights

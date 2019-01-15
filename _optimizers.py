@@ -21,20 +21,22 @@ class Optimizer():
     #-----
     def sgd(self, training_set, labels):
         """
-        This function does stochastic gradient descent and uses backpropogation to update the
+        This function does stochastic gradient descent and uses backpropagation to update the
         weights. See my notes: /home/latitude/Documents/academic/ai/neural_networks.pdf
 
         SGD : Stochastic Gradient Descent
         """
         # Loop over every sample in the training set
-        for sample, target in zip(training_set, labels):
-            # Preprocess the sample to make sure it's a column vector
+        for idx, (sample, target) in enumerate(zip(training_set, labels)):
+            print('\rSample %d/%d' % (idx + 1, training_set.shape[0]), end="")
+            # Preprocess the sample and target to make sure they're column vectors
             sample.shape = (len(sample), 1)
+            target.shape = (len(target), 1)
             # Get the network's prediction for the current sample
             y = self.predict(sample)
             # Save the error from this sample
             self.E_T += 0.5 * np.power(target - y, 2.0).sum()
-            # Now do the backpropogation in order to update the weights
-            self.backpropogate(y, target)
+            # Now do the backproaogation in order to update the weights
+            self.backpropagate(y, target, sample)
             # Update the weights
             self.update_weights()

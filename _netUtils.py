@@ -6,6 +6,7 @@ Purpose: Contains helper functions for the NN
 Notes:
 """
 import numpy as np
+import os
 
 
 
@@ -85,3 +86,76 @@ class netUtils():
         """
         print('************************\nEpoch: %d\nError: %f\n*************************'
             % (e, self.E_T))
+
+    #-----
+    # save
+    #-----
+    def save(self, prefix, nfeatures):
+        """
+        Because it takes FOREVER to train one of these networks, this function will save
+        the network to a set of files. I know this isn't great. It's just quick and easy.
+        This network is for purely educational purposes. The format is:
+
+        prefix-network-props.txt:
+            Number of layers
+            Number of nodes in layer 1
+            Layer 1 activation type
+            Layer 1 weight init method
+            Number of nodes in layer 2
+            Layer 2 activation type
+            Layer 2 weight init method
+            ...
+
+        prefix-network-layer-#.npy:
+            Weights for layer #
+        """
+        # Gather network properties
+        props = [len(self._layers)]
+        for i, l in enumerate(self._layers):
+            props.append(l.nNodes)
+            props.append(l.activation)
+            # Write weight files
+            np.save(prefix + '-network-layer-' + str(i), l._weights)
+            
+        # Write properties file
+        with open(prefix + '-network-props.txt', 'w') as f:
+            for p in props:
+                f.write(str(p) + '\n')
+
+    #-----
+    # load
+    #-----
+    def load(self, prefix):
+        """
+        This function reads in the files beginning with prefix, assuming the structure
+        described in save(). This assumes that all of the files being loaded are in the
+        current working directory for simplicity. 
+        """
+        # Get current working directory (assuming that's where network files are)
+        cwd = os.getcwd()
+        # Get properties file
+        props_file = os.path.join(cwd, prefix + '-network-props.txt')
+        if os.path.isfile(props_file) is False:
+            raise('Error, named network does not exist in current directory!')
+        self._layers = []
+        # Read properties and weights simultaneously
+        with open(props_file) as pf:
+            # Get the number of layers in the network
+            nlayers = int(pf.readline())
+            # Loop over the number of layers
+            for i in range(nlayers):
+                # Get the number of nodes in the layer
+                nNodes = int(pf.readline())
+                # Layer activation function
+                act = pf.readline()
+                # Layer weight init method, in case of re-training
+                weight_init = pf.readline()
+                # Get file for current layer's weights
+                wt_file = os.path.join(cwd, prefix + '-network-layer-' + str(i) + '.npy')
+                if os.path.isfile(wt_file) is False:
+                    raise('Error, could not find a weights file!')
+                # Load weights file
+                weights = np.load(wt_file)
+                # Build layer
+                self._layers.append(Layer(nNodes, act, weight_init)
+                self._layers[i]._weights = weights.copy()

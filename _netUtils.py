@@ -5,6 +5,7 @@ Date:    1/15/19
 Purpose: Contains helper functions for the NN
 Notes:
 """
+import numpy as np
 
 
 

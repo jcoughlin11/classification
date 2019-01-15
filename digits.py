@@ -59,10 +59,10 @@ def preprocess(images):
     one sample (image) per row and one feature (pixel brightness) per column. This is
     the flattening stage. Then we feature scale by normalizing the pixel brightnesses
     """
-    # Normalize
-    images /= 255.0
     # Reshape
     images = images.reshape((images.shape[0], images.shape[1] * images.shape[2]))
+    # Normalize
+    images = images / 255.0
     return images
 
 
@@ -90,9 +90,14 @@ def one_hot(labels):
 
     For my case, my categories are already numbers, so I can just pass those as the
     indices directly and it works.
+
+    The tf.one_hot function does not appear to be compatible with what I've written (since
+    it's a tensor, not a numpy array). So, sadly, I think I have to write my own one-hot.
     """
     nClasses = 10
-    oneHot_labs = tf.one_hot(depth = nClasses, indices = labels)
+    oneHot_labs = np.zeros((labels.shape[0], nClasses))
+    for i in range(len(labels)):
+        onHot_labs[i][labels[i]] = 1.
     return oneHot_labs
 
 
@@ -117,7 +122,7 @@ print('Constructing network...')
 hidden_layer = layers.Layer(nNodes = 128, activation = 'linear')
 output_layer = layers.Layer(nNodes = 10, activation = 'softmax')
 net_layers = [hidden_layer, output_layer]
-net = network.Network(net_layers, learning_rate = eta)
+net = network.Network(net_layers, learning_rate = 0.1)
 
 # Train the network
 print('Training...')

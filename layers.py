@@ -5,6 +5,7 @@ Date:    1/9/19
 Purpose: Contains the layers class
 Notes:
 """
+import numpy as np
 import _activations
 
 
@@ -72,8 +73,8 @@ class Layer(_activations.Activation):
     #-----
     def __init__(self, nNodes = 1,
                 activation = 'linear',
-                weight_init_method):
-        self.Nnodes              = nNodes
+                weight_init_method = 'zeros'):
+        self.nNodes              = nNodes
         self.activation          = activation
         self.initMethod          = weight_init_method
         self._activationFunction = None
@@ -100,7 +101,7 @@ class Layer(_activations.Activation):
     #-----
     # initialize_weights
     #-----
-    def init_weights(self, shape):
+    def _init_weights(self, shape):
         """
         This function initializes the weights based on the chosen method.
         """

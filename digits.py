@@ -1,7 +1,7 @@
 """
-Title: digits.py
-Author: Jared Coughlin
-Date: 1/9/19
+Title:   digits.py
+Author:  Jared Coughlin
+Date:    1/9/19
 Purpose: A NN to decide whether or not a given image of a digit is an 8 or not. This is
         probably stupid, but I want to implment this network myself, just to make sure
         I understand. Then I can go and use tensorflow.
@@ -101,9 +101,11 @@ def one_hot(labels):
 #               Main Script
 #============================================
 # Get the training and test data
+print('Getting data...')
 (train_ims, train_labs), (test_ims, test_labs) = keras.datasets.mnist.load_data()
 
 # Preprocess the data
+print('Preprocessing data...')
 train_ims = preprocess(train_ims)
 test_ims = preprocess(test_ims)
 
@@ -111,13 +113,16 @@ test_ims = preprocess(test_ims)
 train_labs = one_hot(train_labs)
 
 # Set up the network
+print('Constructing network...')
 hidden_layer = layers.Layer(nNodes = 128, activation = 'linear')
 output_layer = layers.Layer(nNodes = 10, activation = 'softmax')
 net_layers = [hidden_layer, output_layer]
-net = network.Network(net_layers, loss='SSE')
+net = network.Network(net_layers, learning_rate = eta)
 
 # Train the network
+print('Training...')
 net.train(train_ims, train_labs, epochs = 5)
 
 # Test the network
+print('Testing...')
 net.test(test_ims, test_labs)

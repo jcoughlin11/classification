@@ -1,7 +1,7 @@
 """
-Title: optimizers.py
-Author: Jared Coughlin
-Date: 1/9/19
+Title:   optimizers.py
+Author:  Jared Coughlin
+Date:    1/9/19
 Purpose: Contains various optimization algorithms that the network can use in training
 Notes:
 """
@@ -13,6 +13,9 @@ import numpy as np
 # Optimizer
 #============================================
 class Optimizer():
+    """
+    This class holds all of the optimization methods I've implemented.
+    """
     #-----
     # Stochastic Gradient Descent
     #-----
@@ -20,6 +23,8 @@ class Optimizer():
         """
         This function does stochastic gradient descent and uses backpropogation to update the
         weights. See my notes: /home/latitude/Documents/academic/ai/neural_networks.pdf
+
+        SGD : Stochastic Gradient Descent
         """
         # Loop over every sample in the training set
         for sample, target in zip(training_set, labels):

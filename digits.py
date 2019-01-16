@@ -138,7 +138,17 @@ net.train(train_ims, train_labs, epochs = 5)
 
 # Save the network
 net.save('digits', 28 * 28)
-
+# Load the network
+#net = network.Network(load='digits')
 # Test the network
 print('Testing...')
 net.test(test_ims, test_labs)
+
+# Make a prediction
+ti = test_ims[0]
+tl = test_labs[0]
+ti.shape = (len(ti), 1)
+y = net.predict(ti)
+print('Prediction: ')
+print(y)
+print('Answer: %d' % (tl))

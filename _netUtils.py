@@ -7,6 +7,7 @@ Notes:
 """
 import numpy as np
 import os
+import layers
 
 
 
@@ -80,12 +81,13 @@ class netUtils():
     #-----
     # display_progress
     #-----
-    def _display_progress(self, epoch):
+    def _display_progress(self, epoch, t):
         """
         Just prints the total error after each training epoch. Hopefully it goes down!
+        Also prints the time it took to train that epoch
         """
-        print('************************\nEpoch: %d\nError: %f\n*************************'
-            % (e, self.E_T))
+        print('************************\nEpoch: %d\nError: %f '\
+                'Time: %fs\n*************************' % (epoch, self.E_T, t))
 
     #-----
     # save
@@ -114,6 +116,7 @@ class netUtils():
         for i, l in enumerate(self._layers):
             props.append(l.nNodes)
             props.append(l.activation)
+            props.append(l.initMethod)
             # Write weight files
             np.save(prefix + '-network-layer-' + str(i), l._weights)
             
@@ -147,9 +150,9 @@ class netUtils():
                 # Get the number of nodes in the layer
                 nNodes = int(pf.readline())
                 # Layer activation function
-                act = pf.readline()
+                act = pf.readline().strip()
                 # Layer weight init method, in case of re-training
-                weight_init = pf.readline()
+                weight_init = pf.readline().strip()
                 # Get file for current layer's weights
                 wt_file = os.path.join(cwd, prefix + '-network-layer-' + str(i) + '.npy')
                 if os.path.isfile(wt_file) is False:
@@ -157,5 +160,15 @@ class netUtils():
                 # Load weights file
                 weights = np.load(wt_file)
                 # Build layer
-                self._layers.append(Layer(nNodes, act, weight_init)
+                self._layers.append(layers.Layer(nNodes, act, weight_init))
                 self._layers[i]._weights = weights.copy()
+        # Set the activation, loss, and optimizer functions for the network
+        self.loss = 'SSE'
+        self.optimization = 'SGD'
+        self._lossFunction = None
+        self._optimizer = None
+        self.E_T = None
+        self._progress = None
+        self.learning_rate = 0.1
+        self._setLossFunction()
+        self._setOptimizer() 

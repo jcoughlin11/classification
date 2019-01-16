@@ -64,7 +64,7 @@ class Network(_optimizers.Optimizer,
     # Constructor
     #-----
     def __init__(self,
-                layers,
+                layers = None,
                 loss = 'SSE',
                 learning_rate = 0.1,
                 optimization = 'SGD',
@@ -242,12 +242,11 @@ class Network(_optimizers.Optimizer,
         # Loop over every sample
         for s, t in zip(inputs, labels):
             s.shape = (len(s), 1)
-            t.shape = (len(t), 1)
             # Make prediction
             y = self.predict(s)
             # Compare with correct answer. The following only works because the digits
             # line up with the indices in the array
-            if y.argmax() == t.argmax():
+            if y.argmax() == t:
                 guessed_right += 1
         # Print overall accuracy
         accuracy = (float(guessed_right) / float(inputs.shape[0])) * 100.

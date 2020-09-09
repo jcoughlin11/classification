@@ -1,0 +1,7 @@
+2
+32
+logistic
+zeros
+10
+softmax
+zeros
